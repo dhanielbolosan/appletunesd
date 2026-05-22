@@ -70,7 +70,17 @@ func main() {
 		Use:   "quit",
 		Short: "Kill the appletunesd process",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Qutting appletunesd...")
+			resp, err := http.Post("http://localhost:8080/quit", "application/json", nil)
+
+			if err != nil {
+				fmt.Printf("Error contacting daemon: %v\n", err)
+				return
+			}
+
+			defer resp.Body.Close()
+
+			body, _ := io.ReadAll(resp.Body)
+			fmt.Printf("%s", body)
 		},
 	}
 
